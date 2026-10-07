@@ -130,6 +130,27 @@ func (this *Importer) GetPageSizes() map[int]map[string]map[string]float64 {
 	return result
 }
 
+// GetPageRotations returns each page's /Rotate value in degrees, normalized
+// to 0, 90, 180 or 270. Page numbers start at 1.
+func (this *Importer) GetPageRotations() map[int]int {
+	reader := this.GetReader()
+	n, err := reader.getNumPages()
+	if err != nil {
+		panic(err)
+	}
+
+	result := make(map[int]int, n)
+	for pageno := 1; pageno <= n; pageno++ {
+		rotation, err := reader.getPageRotation(pageno)
+		if err != nil {
+			panic(err)
+		}
+		result[pageno] = ((rotation.Int % 360) + 360) % 360
+	}
+
+	return result
+}
+
 func (this *Importer) ImportPage(pageno int, box string) int {
 	// If page has already been imported, return existing tplN
 	pageNameNumber := fmt.Sprintf("%s-%04d", this.sourceFile, pageno)

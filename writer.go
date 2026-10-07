@@ -120,7 +120,7 @@ func (this *PdfWriter) ImportPage(reader *PdfReader, pageno int, boxName string)
 	this.k = 1
 
 	// Get all page boxes
-	pageBoxes, err := reader.getPageBoxes(1, this.k)
+	pageBoxes, err := reader.getPageBoxes(pageno, this.k)
 	if err != nil {
 		return -1, errors.Wrap(err, "Failed to get page boxes")
 	}
@@ -547,7 +547,7 @@ func (this *PdfWriter) UseTemplate(tplid int, _x float64, _y float64, _w float64
 	_x += tpl.X
 	_y += tpl.Y
 
-	wh := this.getTemplateSize(0, _w, _h)
+	wh := this.getTemplateSize(tplid, _w, _h)
 
 	_w = wh["w"]
 	_h = wh["h"]
